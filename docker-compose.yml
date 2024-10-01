@@ -7,6 +7,7 @@ services:
     volumes:
       - .:/usr/src/app
       - /usr/src/app/node_modules
+    restart: unless-stopped
     environment:
       - NODE_ENV=development
     command: node bot.js
