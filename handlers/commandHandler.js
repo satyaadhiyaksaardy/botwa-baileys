@@ -1,26 +1,39 @@
-const config = require('../config/config')
+const config = require('../config/config');
 const { handlePing } = require('../features/ping');
 const { handleHello } = require('../features/hello');
 const { handleWeatherInfo } = require('../features/weatherInfo');
-const { handleCctv } = require('../features/cctv')
+const { handleCctv } = require('../features/cctv');
 
 async function handleCommand(sock, messageKey, messageContent) {
-    const { prefix } = config
-    const sender = messageKey.remoteJid
-    const command = messageContent.slice(prefix.length).trim();
+    try {
+        const sender = messageKey.remoteJid;
+        const command = messageContent.slice(config.prefix.length).trim().toLowerCase();
 
-    if (command === 'ping') {
-        await handlePing(sock, sender);
-    } else if (command === 'hello') {
-        await handleHello(sock, sender);
-    } else if (command === 'ingfo-cuaca') {
-        await handleWeatherInfo(sock, messageKey);
-    } else if (command === 'ingfo-atas') {
-        await handleCctv(sock, messageKey, 'atas');
-    } else if (command === 'ingfo-bawah') {
-        await handleCctv(sock, messageKey, 'bawah');
-    } else {
-        return
+        // if (command in config.commands) {
+        switch (command) {
+            case config.commands.ping:
+                await handlePing(sock, sender);
+                break;
+            case config.commands.hello:
+                await handleHello(sock, sender);
+                break;
+            case config.commands.weatherInfo:
+                await handleWeatherInfo(sock, messageKey);
+                break;
+            case config.commands.cctvAtas:
+                await handleCctv(sock, messageKey, 'atas');
+                break;
+            case config.commands.cctvBawah:
+                await handleCctv(sock, messageKey, 'bawah');
+                break;
+            default:
+                break;
+        }
+        // }
+
+    } catch (error) {
+        console.error('Error handling command:', error);
+        await sock.sendMessage(sender, { text: 'An error occurred. Please try again later.' });
     }
 }
 

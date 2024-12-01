@@ -32,6 +32,7 @@ async function handleWeatherInfo(sock, messageKey) {
 
     } catch (error) {
         console.error('Error fetching or sending image:', error);
+        await sendReaction(sock, messageKey, '❌');
         await sock.sendMessage(sender, { text: 'An error occurred while fetching the weather image.' });
     }
 }

@@ -36,6 +36,7 @@ async function handleCctv(sock, messageKey, location) {
 
     } catch (error) {
         console.error('Error fetching or sending image:', error);
+        await sendReaction(sock, messageKey, '❌');
         await sock.sendMessage(messageKey.remoteJid, { text: 'An error occurred while fetching the CCTV image.' });
     }
 }
